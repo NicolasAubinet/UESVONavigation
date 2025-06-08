@@ -69,7 +69,7 @@ ESVOPathFindingAlgorithmStepperStatus FSVOPathFindingAlgorithmStepper_LazyThetaS
 
         State = ESVOPathFindingAlgorithmState::ProcessNeighbor;
 
-        for ( const auto observer : Observers )
+        for ( const auto & observer : Observers )
         {
             observer->OnProcessSingleNode( *considered_node_unsafe );
         }
@@ -139,7 +139,7 @@ ESVOPathFindingAlgorithmStepperStatus FSVOPathFindingAlgorithmStepper_LazyThetaS
 
     if ( new_total_cost >= neighbor_node.TotalCost )
     {
-        for ( const auto observer : Observers )
+        for ( const auto & observer : Observers )
         {
             observer->OnProcessNeighbor( *current_node, neighbor_address, new_total_cost );
         }
@@ -159,7 +159,7 @@ ESVOPathFindingAlgorithmStepperStatus FSVOPathFindingAlgorithmStepper_LazyThetaS
         Graph.OpenList.Push( neighbor_node );
     }
 
-    for ( const auto observer : Observers )
+    for ( const auto & observer : Observers )
     {
         observer->OnProcessNeighbor( neighbor_node );
     }

@@ -8,7 +8,7 @@ class USVOPathFindingAlgorithm;
 class USVOPathHeuristicCalculator;
 class USVOPathTraversalCostCalculator;
 
-typedef uint_fast64_t MortonCode;
+typedef uint64 MortonCode;
 typedef uint8 LayerIndex;
 typedef uint32 NodeIndex;
 typedef int32 LeafIndex;
@@ -123,7 +123,7 @@ struct FSVOLeafNode
     bool IsCompletelyOccluded() const;
     bool IsCompletelyFree() const;
 
-    uint_fast64_t SubNodes = 0;
+    uint64 SubNodes = 0;
     FSVONodeAddress Parent;
 };
 

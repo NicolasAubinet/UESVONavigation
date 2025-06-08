@@ -136,7 +136,7 @@ ESVOPathFindingAlgorithmStepperStatus FSVOPathFindingAlgorithmStepper_AStar::Pro
 
         State = ESVOPathFindingAlgorithmState::ProcessNeighbor;
 
-        for ( const auto observer : Observers )
+        for ( const auto & observer : Observers )
         {
             observer->OnProcessSingleNode( considered_node_unsafe );
         }
@@ -179,7 +179,7 @@ ESVOPathFindingAlgorithmStepperStatus FSVOPathFindingAlgorithmStepper_AStar::Pro
 
     if ( new_total_cost >= neighbor_node.TotalCost )
     {
-        for ( const auto observer : Observers )
+        for ( const auto & observer : Observers )
         {
             observer->OnProcessNeighbor( considered_node_unsafe, neighbor_address, new_total_cost );
         }
@@ -199,7 +199,7 @@ ESVOPathFindingAlgorithmStepperStatus FSVOPathFindingAlgorithmStepper_AStar::Pro
         Graph.OpenList.Push( neighbor_node );
     }
 
-    for ( const auto observer : Observers )
+    for ( const auto & observer : Observers )
     {
         observer->OnProcessNeighbor( neighbor_node );
     }

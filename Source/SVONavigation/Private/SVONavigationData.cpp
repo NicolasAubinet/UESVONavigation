@@ -694,7 +694,7 @@ void ASVONavigationData::UpdateDrawing() const
             rendering_component->MarkRenderStateDirty();
         }
     }
-#endif /
+#endif
 }
 
 void ASVONavigationData::ResetGenerator( const bool cancel_build )

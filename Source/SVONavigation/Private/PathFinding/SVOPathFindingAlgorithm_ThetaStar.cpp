@@ -90,7 +90,7 @@ ESVOPathFindingAlgorithmStepperStatus FSVOPathFindingAlgorithmStepper_ThetaStar:
 
     if ( new_total_cost >= neighbor_node.TotalCost )
     {
-        for ( const auto observer : Observers )
+        for ( const auto & observer : Observers )
         {
             observer->OnProcessNeighbor( considered_node_unsafe, neighbor_node_address, new_total_cost );
         }
@@ -110,7 +110,7 @@ ESVOPathFindingAlgorithmStepperStatus FSVOPathFindingAlgorithmStepper_ThetaStar:
         Graph.OpenList.Push( neighbor_node );
     }
 
-    for ( const auto observer : Observers )
+    for ( const auto & observer : Observers )
     {
         observer->OnProcessNeighbor( neighbor_node );
     }

@@ -2,6 +2,7 @@
 
 #include "SVOHelpers.h"
 #include "SVONavigationData.h"
+#include "SVOVolumeNavigationData.h"
 
 #include <Debug/DebugDrawService.h>
 #include <Engine/CollisionProfile.h>

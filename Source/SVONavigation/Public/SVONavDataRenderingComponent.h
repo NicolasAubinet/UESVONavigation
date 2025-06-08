@@ -11,6 +11,7 @@
 
 class ASVONavigationData;
 class USVONavDataRenderingComponent;
+class FSVOVolumeNavigationData;
 
 class SVONAVIGATION_API FSVONavigationMeshSceneProxy final : public FDebugRenderSceneProxy
 {
