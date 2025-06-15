@@ -314,7 +314,7 @@ ENavigationQueryResult::Type ASVONavigationData::CalcPathLengthAndCost( const FV
 
     const TSharedRef< FSVONavigationPath > navigation_path = MakeShareable( new FSVONavigationPath() );
 
-    result = FSVOPathFinder::GetPath( navigation_path.Get(), *this, path_start, path_end, filter );
+    result = FSVOPathFinder::GetPath( navigation_path.Get(), *this, path_start, path_end, filter, true );
 
     if ( result == ENavigationQueryResult::Success || ( result == ENavigationQueryResult::Fail && navigation_path->IsPartial() ) )
     {
@@ -947,7 +947,7 @@ FPathFindingResult ASVONavigationData::FindPath( const FNavAgentProperties & /*a
             }
             else
             {
-                result.Result = FSVOPathFinder::GetPath( *svo_navigation_path, *self, path_finding_query.StartLocation, adjusted_end_location, path_finding_query.QueryFilter );
+                result.Result = FSVOPathFinder::GetPath( *svo_navigation_path, *self, path_finding_query.StartLocation, adjusted_end_location, path_finding_query.QueryFilter, path_finding_query.bAllowPartialPaths );
             }
         }
     }

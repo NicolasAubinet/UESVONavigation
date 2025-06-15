@@ -43,7 +43,8 @@ public:
     FVector GetNodePositionFromAddress( const FSVONodeAddress & address, bool try_get_sub_node_position ) const;
     FVector GetNodePositionFromLayerAndMortonCode( LayerIndex layer_index, MortonCode morton_code ) const;
     FVector GetLeafNodePositionFromMortonCode( MortonCode morton_code ) const;
-    bool GetNodeAddressFromPosition( FSVONodeAddress & node_address, const FVector & position ) const;
+    FVector GetLeafSubNodeWorldPosition(MortonCode MortonCode, uint8 SubNodeIndex) const;
+    bool GetNodeAddressFromPosition( FSVONodeAddress & node_address, const FVector & position, bool allow_partial_paths ) const;
     void GetNodeNeighbors( TArray< FSVONodeAddress > & neighbors, const FSVONodeAddress & node_address ) const;
     float GetLayerRatio( LayerIndex layer_index ) const;
     float GetLayerInverseRatio( LayerIndex layer_index ) const;

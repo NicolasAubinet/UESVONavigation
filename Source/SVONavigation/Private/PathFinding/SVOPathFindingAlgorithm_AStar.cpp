@@ -218,6 +218,22 @@ ESVOPathFindingAlgorithmStepperStatus FSVOPathFindingAlgorithmStepper_AStar::End
     if ( BestNodeCost != 0.f )
     {
         result = EGraphAStarResult::GoalUnreachable;
+
+        if ( Parameters.AllowPartialPath )
+        {
+            // Try to build a path to the best node explored
+            TArray< FSVOPathFinderNodeAddressWithCost > node_addresses;
+            BestNodeIndex = FMath::Clamp(BestNodeIndex, 0, Graph.NodePool.Num() - 1);
+
+            if ( FillNodeAddresses(node_addresses) )
+            {
+                result = EGraphAStarResult::SearchSuccess;
+                for ( const auto & observer : Observers )
+                {
+                    observer->OnSearchSuccess( node_addresses );
+                }
+            }
+        }
     }
 
     if ( result == EGraphAStarResult::SearchSuccess )

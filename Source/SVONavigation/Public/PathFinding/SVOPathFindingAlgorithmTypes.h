@@ -90,7 +90,7 @@ struct SVONAVIGATION_API FSVOPathFinderDebugInfos
 
 struct FSVOPathFindingParameters
 {
-    static TOptional< FSVOPathFindingParameters > Initialize( const FSVOVolumeNavigationData & volume_navigation_data, const FVector & start_location, const FVector & end_location, const FNavigationQueryFilter & nav_query_filter );
+    static TOptional< FSVOPathFindingParameters > Initialize( const FSVOVolumeNavigationData & volume_navigation_data, const FVector & start_location, const FVector & end_location, const FNavigationQueryFilter & nav_query_filter, bool allow_partial_paths );
 
     FVector StartLocation;
     FVector EndLocation;
@@ -102,7 +102,8 @@ struct FSVOPathFindingParameters
     const FSVOVolumeNavigationData & VolumeNavigationData;
     FSVONodeAddress StartNodeAddress;
     FSVONodeAddress EndNodeAddress;
+    bool AllowPartialPath;
 
 private:
-    FSVOPathFindingParameters( const FSVOVolumeNavigationData & volume_navigation_data, const FVector & start_location, const FVector & end_location, const FNavigationQueryFilter & nav_query_filter );
+    FSVOPathFindingParameters( const FSVOVolumeNavigationData & volume_navigation_data, const FVector & start_location, const FVector & end_location, const FNavigationQueryFilter & nav_query_filter, bool allow_partial_paths );
 };

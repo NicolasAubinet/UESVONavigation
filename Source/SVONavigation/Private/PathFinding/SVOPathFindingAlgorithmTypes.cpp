@@ -50,7 +50,7 @@ void FSVOPathFinderDebugInfos::Reset()
     CurrentBestPath.ResetForRepath();
 }
 
-FSVOPathFindingParameters::FSVOPathFindingParameters( const FSVOVolumeNavigationData & volume_navigation_data, const FVector & start_location, const FVector & end_location, const FNavigationQueryFilter & nav_query_filter ) :
+FSVOPathFindingParameters::FSVOPathFindingParameters( const FSVOVolumeNavigationData & volume_navigation_data, const FVector & start_location, const FVector & end_location, const FNavigationQueryFilter & nav_query_filter, bool allow_partial_paths) :
     StartLocation( start_location ),
     EndLocation( end_location ),
     NavigationQueryFilter( nav_query_filter ),
@@ -58,17 +58,18 @@ FSVOPathFindingParameters::FSVOPathFindingParameters( const FSVOVolumeNavigation
     QueryFilterSettings( QueryFilterImplementation->QueryFilterSettings ),
     HeuristicCalculator( QueryFilterSettings.HeuristicCalculator ),
     CostCalculator( QueryFilterSettings.TraversalCostCalculator ),
-    VolumeNavigationData( volume_navigation_data )
+    VolumeNavigationData( volume_navigation_data ),
+    AllowPartialPath( allow_partial_paths )
 {
 }
 
-TOptional< FSVOPathFindingParameters > FSVOPathFindingParameters::Initialize( const FSVOVolumeNavigationData & volume_navigation_data, const FVector & start_location, const FVector & end_location, const FNavigationQueryFilter & nav_query_filter )
+TOptional< FSVOPathFindingParameters > FSVOPathFindingParameters::Initialize( const FSVOVolumeNavigationData & volume_navigation_data, const FVector & start_location, const FVector & end_location, const FNavigationQueryFilter & nav_query_filter, bool allow_partial_paths )
 {
-    auto result = FSVOPathFindingParameters( volume_navigation_data, start_location, end_location, nav_query_filter );
+    auto result = FSVOPathFindingParameters( volume_navigation_data, start_location, end_location, nav_query_filter, allow_partial_paths );
 
-    if ( volume_navigation_data.GetNodeAddressFromPosition( result.StartNodeAddress, start_location ) )
+    if ( volume_navigation_data.GetNodeAddressFromPosition( result.StartNodeAddress, start_location, allow_partial_paths ) )
     {
-        if ( volume_navigation_data.GetNodeAddressFromPosition( result.EndNodeAddress, end_location ) )
+        if ( volume_navigation_data.GetNodeAddressFromPosition( result.EndNodeAddress, end_location, allow_partial_paths ) )
         {
             return result;
         }

@@ -36,9 +36,9 @@ FVector FSVOVolumeNavigationData::GetNodePositionFromAddress( const FSVONodeAddr
         // Leaf nodes don't have the same NodeIndex as other nodes. They map to the index of the array of leaf nodes.
         // We must then re-construct the leaf node position based on that leaf node parent.
         const auto & leaf_nodes = SVOData.GetLeafNodes();
-        const auto & leaf_node = leaf_nodes.GetLeafNode( address.NodeIndex );        
+        const auto & leaf_node = leaf_nodes.GetLeafNode( address.NodeIndex );
         const auto & leaf_node_parent_node = SVOData.GetLayer( 1 ).GetNode( leaf_node.Parent.NodeIndex );
-        
+
         const auto child_index_offset = address.NodeIndex - leaf_node_parent_node.FirstChild.NodeIndex;
         const auto leaf_node_morton_code = FSVOHelpers::GetFirstChildMortonCode( leaf_node_parent_node.MortonCode ) + child_index_offset;
         const auto leaf_node_extent = leaf_nodes.GetLeafNodeExtent();
@@ -103,7 +103,7 @@ FVector FSVOVolumeNavigationData::GetLeafNodePositionFromMortonCode( const Morto
     return leaf_node_position;
 }
 
-bool FSVOVolumeNavigationData::GetNodeAddressFromPosition( FSVONodeAddress & node_address, const FVector & position ) const
+bool FSVOVolumeNavigationData::GetNodeAddressFromPosition( FSVONodeAddress & node_address, const FVector & position, bool allow_partial_paths ) const
 {
     const auto & navigation_bounds = SVOData.GetNavigationBounds();
 
@@ -187,7 +187,7 @@ bool FSVOVolumeNavigationData::GetNodeAddressFromPosition( FSVONodeAddress & nod
 
                 const auto leaf_code = FSVOHelpers::GetMortonCodeFromVector( leaf_coords ); // This morton code is our key into the 64-bit leaf node
 
-                if ( leaf.IsSubNodeOccluded( leaf_code ) )
+                if ( !allow_partial_paths && leaf.IsSubNodeOccluded( leaf_code ) )
                 {
                     return false; // This voxel is blocked
                 }
@@ -298,7 +298,7 @@ void FSVOVolumeNavigationData::GetNodeNeighbors( TArray< FSVONodeAddress > & nei
                 /*
                 Sub node morton code ordering for the face pointing to neighbor[0], which is (1,0,0)
                 Use the debug draw options of the navigation data in the scene to show all the sub nodes
-                 
+
                 Z
                 |
                 |   36 38 52 54
@@ -475,7 +475,7 @@ bool FSVOVolumeNavigationData::IsPositionOccluded( const FVector & position, con
 {
     QUICK_SCOPE_CYCLE_COUNTER( STAT_SVOBoundsNavigationData_IsPositionOccluded );
     TArray< FOverlapResult > overlap_results;
-    const auto result = Settings.World->OverlapMultiByChannel(  
+    const auto result = Settings.World->OverlapMultiByChannel(
         overlap_results,
         position,
         FQuat::Identity,
@@ -499,12 +499,12 @@ void FSVOVolumeNavigationData::FirstPassRasterization()
     {
         const auto & layer = SVOData.GetLayer( 1 );
         const auto layer_max_node_count = layer.GetMaxNodeCount();
-        const auto layer_node_extent = layer.GetNodeExtent();        
+        const auto layer_node_extent = layer.GetNodeExtent();
 
         for ( MortonCode node_index = 0; node_index < layer_max_node_count; ++node_index )
         {
             const auto position = GetNodePositionFromLayerAndMortonCode( 1, node_index );
-            
+
             if ( IsPositionOccluded( position, layer_node_extent ) )
             {
                 SVOData.AddBlockedNode( 0, node_index );
