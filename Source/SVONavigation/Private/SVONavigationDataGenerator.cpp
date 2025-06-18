@@ -36,7 +36,9 @@ void FSVONavigationDataGenerator::Init()
 {
     GenerationSettings = NavigationData.GenerationSettings;
 
-    UpdateNavigationBounds();
+    // UpdateNavigationBounds();
+
+    RebuildAll();
 
     ///** setup maximum number of active tile generator*/
     const int32 worker_threads_count = FTaskGraphInterface::Get().GetNumWorkerThreads();

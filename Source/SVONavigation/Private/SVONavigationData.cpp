@@ -503,10 +503,10 @@ void ASVONavigationData::ConditionalConstructGenerator()
     check( world );
     const bool requires_generator = SupportsRuntimeGeneration() || !world->IsGameWorld();
 
-    if ( !requires_generator )
-    {
-        return;
-    }
+    // if ( !requires_generator )
+    // {
+        // return;
+    // }
 
     if ( FSVONavigationDataGenerator * generator = new FSVONavigationDataGenerator( *this ) )
     {
