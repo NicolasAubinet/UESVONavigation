@@ -132,6 +132,8 @@ ESVOPathFindingAlgorithmStepperStatus FSVOPathFindingAlgorithmStepper_ThetaStar:
 
 bool FSVOPathFindingAlgorithmStepper_ThetaStar::HasLineOfSight( const FSVONodeAddress from, const FSVONodeAddress to ) const
 {
+    ++LOSCheckCount;
+
     const auto * ray_caster = ThetaStarParameters.RayCaster;
 
     if ( ray_caster == nullptr )

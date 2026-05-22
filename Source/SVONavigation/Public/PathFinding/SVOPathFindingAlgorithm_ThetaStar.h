@@ -34,7 +34,7 @@ protected:
     const FSVOPathFindingAlgorithmStepper_ThetaStar_Parameters & ThetaStarParameters;
 
 private:
-    int LOSCheckCount;
+    mutable int LOSCheckCount;
 };
 
 UCLASS( Blueprintable )
