@@ -2,6 +2,7 @@
 
 #include "Pathfinding/SVONavigationQueryFilterSettings.h"
 #include "SVOHelpers.h"
+#include "SVONavigationSettings.h"
 #include "SVOVolumeNavigationData.h"
 
 FSVOPathFindingAlgorithmStepper_AStar::FSVOPathFindingAlgorithmStepper_AStar( const FSVOPathFindingParameters & parameters ) :
@@ -283,11 +284,16 @@ ENavigationQueryResult::Type USVOPathFindingAlgorithmAStar::GetPath( FSVONavigat
     stepper.AddObserver( path_builder );
 
     int iterations = 0;
+    const auto configured_threshold = GetDefault< USVONavigationSettings >()->PathFindingIterationsWarningThreshold;
+    const auto warning_threshold = configured_threshold > 0 ? configured_threshold : 5000;
 
     EGraphAStarResult result = EGraphAStarResult::SearchFail;
     while ( stepper.Step( result ) == ESVOPathFindingAlgorithmStepperStatus::MustContinue )
     {
-        iterations++;
+        if ( ++iterations == warning_threshold )
+        {
+            UE_LOG( LogTemp, Warning, TEXT( "SVO pathfinding crossed %i solver iterations without finishing - likely an unreachable target or a disconnected navigation island. Start=%s End=%s" ), warning_threshold, *params.StartLocation.ToString(), *params.EndLocation.ToString() );
+        }
     }
 
     return FSVOHelpers::GraphAStarResultToNavigationTypeResult( result );

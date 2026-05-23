@@ -25,4 +25,7 @@ public:
     // If that option is not set, the pathfinding will be always executed.
     UPROPERTY( config, EditAnywhere, Category = "PathFinding" )
     TSubclassOf< USVORayCaster > DefaultRaycasterClass;
+
+    UPROPERTY( config, EditAnywhere, Category = "PathFinding", meta = ( ClampMin = "0" ) )
+    int32 PathFindingIterationsWarningThreshold;
 };

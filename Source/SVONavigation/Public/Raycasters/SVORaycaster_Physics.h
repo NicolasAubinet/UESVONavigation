@@ -6,7 +6,7 @@
 
 #include "SVORaycaster_Physics.generated.h"
 
-UCLASS( Abstract )
+UCLASS( Abstract, config = Engine )
 class SVONAVIGATION_API USVORayCaster_PhysicsBase : public USVORayCaster
 {
     GENERATED_BODY()
@@ -17,7 +17,7 @@ protected:
 
     virtual bool TracePhysicsInternal( const FVector & from, const FVector & to ) const;
 
-    UPROPERTY( EditAnywhere )
+    UPROPERTY( config, EditAnywhere )
     TEnumAsByte< ETraceTypeQuery > TraceType;
 };
 
@@ -43,6 +43,6 @@ public:
 protected:
     bool TracePhysicsInternal( const FVector & from, const FVector & to ) const override;
 
-    UPROPERTY( EditAnywhere )
+    UPROPERTY( config, EditAnywhere )
     float Radius;
 };

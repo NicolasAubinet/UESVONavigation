@@ -6,4 +6,5 @@ USVONavigationSettings::USVONavigationSettings()
 {
     bNavigationAutoUpdateEnabled = true;
     DefaultRaycasterClass = USVORayCaster_OctreeTraversal::StaticClass();
+    PathFindingIterationsWarningThreshold = 5000;
 }
