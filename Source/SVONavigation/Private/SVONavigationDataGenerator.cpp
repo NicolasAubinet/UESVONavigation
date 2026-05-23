@@ -36,9 +36,20 @@ void FSVONavigationDataGenerator::Init()
 {
     GenerationSettings = NavigationData.GenerationSettings;
 
-    // UpdateNavigationBounds();
+    const auto & volume_navigation_data = NavigationData.GetVolumeNavigationData();
+    const bool has_valid_navigation_data = volume_navigation_data.Num() > 0 &&
+                                           volume_navigation_data.FindByPredicate( []( const FSVOVolumeNavigationData & data ) {
+                                               return !data.GetData().IsValid();
+                                           } ) == nullptr;
 
-    RebuildAll();
+    if ( has_valid_navigation_data )
+    {
+        UpdateNavigationBounds();
+    }
+    else
+    {
+        RebuildAll();
+    }
 
     ///** setup maximum number of active tile generator*/
     const int32 worker_threads_count = FTaskGraphInterface::Get().GetNumWorkerThreads();
