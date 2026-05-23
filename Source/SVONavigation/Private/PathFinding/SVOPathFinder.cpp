@@ -7,6 +7,9 @@
 #include "SVONavigationData.h"
 #include "SVONavigationSettings.h"
 
+#include <GameFramework/Controller.h>
+#include <GameFramework/Pawn.h>
+
 namespace
 {
     USVOPathFindingAlgorithm * GetPathFindingAlgorithm( const FSharedConstNavQueryFilter & nav_query_filter )
@@ -44,8 +47,19 @@ namespace
     }
 }
 
-ENavigationQueryResult::Type FSVOPathFinder::GetPath( FSVONavigationPath & navigation_path, const ASVONavigationData & navigation_data, const FVector & start_location, const FVector & end_location, FSharedConstNavQueryFilter nav_query_filter, bool allow_partial_paths )
+ENavigationQueryResult::Type FSVOPathFinder::GetPath( FSVONavigationPath & navigation_path, const ASVONavigationData & navigation_data, const FVector & start_location, const FVector & end_location, FSharedConstNavQueryFilter nav_query_filter, bool allow_partial_paths, const UObject * path_owner )
 {
+    // The query owner is usually the AI controller; resolve to its pawn so a diagnostic warning names the
+    // actual drone. Falls back to the owner (or null) when there is no pawn.
+    const UObject * diagnostic_owner = path_owner;
+    if ( const auto * controller = Cast< AController >( path_owner ) )
+    {
+        if ( const auto * pawn = controller->GetPawn() )
+        {
+            diagnostic_owner = pawn;
+        }
+    }
+
     if ( const auto * volume_navigation_data = navigation_data.GetVolumeNavigationDataContainingPoints( { start_location, end_location } ) )
     {
         if ( auto * settings = GetDefault< USVONavigationSettings >() )
@@ -72,7 +86,7 @@ ENavigationQueryResult::Type FSVOPathFinder::GetPath( FSVONavigationPath & navig
 
         if ( const auto * path_finder = GetPathFindingAlgorithm( navigation_query_filter_copy ) )
         {
-            const auto params = FSVOPathFindingParameters::Initialize( *volume_navigation_data, start_location, end_location, *navigation_query_filter_copy, allow_partial_paths );
+            const auto params = FSVOPathFindingParameters::Initialize( *volume_navigation_data, start_location, end_location, *navigation_query_filter_copy, allow_partial_paths, diagnostic_owner );
             if ( params.IsSet() )
             {
                 return path_finder->GetPath( navigation_path, params.GetValue() );

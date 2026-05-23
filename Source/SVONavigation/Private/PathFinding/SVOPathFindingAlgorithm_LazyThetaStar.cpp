@@ -190,7 +190,7 @@ ENavigationQueryResult::Type USVOPathFindingAlgorithmLazyThetaStar::GetPath( FSV
     {
         if ( ++iterations == warning_threshold )
         {
-            UE_LOG( LogTemp, Warning, TEXT( "SVO pathfinding crossed %i solver iterations without finishing - likely an unreachable target or a disconnected navigation island. Start=%s End=%s" ), warning_threshold, *params.StartLocation.ToString(), *params.EndLocation.ToString() );
+            UE_LOG( LogTemp, Warning, TEXT( "SVO pathfinding for %s crossed %i solver iterations without finishing - likely an unreachable target or a disconnected navigation island. Start=%s End=%s" ), *GetNameSafe( params.Owner ), warning_threshold, *params.StartLocation.ToString(), *params.EndLocation.ToString() );
         }
     }
 

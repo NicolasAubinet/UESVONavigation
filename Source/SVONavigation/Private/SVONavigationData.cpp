@@ -947,7 +947,7 @@ FPathFindingResult ASVONavigationData::FindPath( const FNavAgentProperties & /*a
             }
             else
             {
-                result.Result = FSVOPathFinder::GetPath( *svo_navigation_path, *self, path_finding_query.StartLocation, adjusted_end_location, path_finding_query.QueryFilter, path_finding_query.bAllowPartialPaths );
+                result.Result = FSVOPathFinder::GetPath( *svo_navigation_path, *self, path_finding_query.StartLocation, adjusted_end_location, path_finding_query.QueryFilter, path_finding_query.bAllowPartialPaths, path_finding_query.Owner.Get() );
             }
         }
     }

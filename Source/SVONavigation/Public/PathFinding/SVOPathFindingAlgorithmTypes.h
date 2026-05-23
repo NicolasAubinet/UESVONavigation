@@ -90,7 +90,7 @@ struct SVONAVIGATION_API FSVOPathFinderDebugInfos
 
 struct FSVOPathFindingParameters
 {
-    static TOptional< FSVOPathFindingParameters > Initialize( const FSVOVolumeNavigationData & volume_navigation_data, const FVector & start_location, const FVector & end_location, const FNavigationQueryFilter & nav_query_filter, bool allow_partial_paths );
+    static TOptional< FSVOPathFindingParameters > Initialize( const FSVOVolumeNavigationData & volume_navigation_data, const FVector & start_location, const FVector & end_location, const FNavigationQueryFilter & nav_query_filter, bool allow_partial_paths, const UObject * path_owner = nullptr );
 
     FVector StartLocation;
     FVector EndLocation;
@@ -103,7 +103,9 @@ struct FSVOPathFindingParameters
     FSVONodeAddress StartNodeAddress;
     FSVONodeAddress EndNodeAddress;
     bool AllowPartialPath;
+    // The object that requested the path (typically the AI controller). Used only for diagnostic logging
+    const UObject * Owner = nullptr;
 
 private:
-    FSVOPathFindingParameters( const FSVOVolumeNavigationData & volume_navigation_data, const FVector & start_location, const FVector & end_location, const FNavigationQueryFilter & nav_query_filter, bool allow_partial_paths );
+    FSVOPathFindingParameters( const FSVOVolumeNavigationData & volume_navigation_data, const FVector & start_location, const FVector & end_location, const FNavigationQueryFilter & nav_query_filter, bool allow_partial_paths, const UObject * path_owner );
 };
