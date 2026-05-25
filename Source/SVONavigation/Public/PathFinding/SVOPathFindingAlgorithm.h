@@ -41,6 +41,8 @@ public:
     const FSVOGraphAStar & GetGraph() const;
 
     ESVOPathFindingAlgorithmStepperStatus Step( EGraphAStarResult & result );
+    // Forces the state machine to Ended so the next Step() finalizes the best partial path.
+    void ForceEnd();
     virtual bool FillNodeAddresses( TArray< FSVOPathFinderNodeAddressWithCost > & node_addresses ) const;
 
 protected:

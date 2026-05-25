@@ -170,15 +170,17 @@ ENavigationQueryResult::Type USVOPathFindingAlgorithmThetaStar::GetPath( FSVONav
     stepper.AddObserver( path_builder );
 
     int iterations = 0;
-    const auto configured_threshold = GetDefault< USVONavigationSettings >()->PathFindingIterationsWarningThreshold;
-    const auto warning_threshold = configured_threshold > 0 ? configured_threshold : 5000;
+    const auto configured_max = GetDefault< USVONavigationSettings >()->PathFindingMaxIterations;
+    const auto max_iterations = configured_max > 0 ? configured_max : 15000;
 
     EGraphAStarResult result = EGraphAStarResult::SearchFail;
     while ( stepper.Step( result ) == ESVOPathFindingAlgorithmStepperStatus::MustContinue )
     {
-        if ( ++iterations == warning_threshold )
+        // At the cap, warn once and finalize the best partial path instead of exhausting the octree.
+        if ( ++iterations == max_iterations )
         {
-            UE_LOG( LogTemp, Warning, TEXT( "SVO pathfinding for %s crossed %i solver iterations without finishing - likely an unreachable target or a disconnected navigation island. Start=%s End=%s" ), *GetNameSafe( params.Owner ), warning_threshold, *params.StartLocation.ToString(), *params.EndLocation.ToString() );
+            UE_LOG( LogTemp, Warning, TEXT( "SVO pathfinding for %s hit the %i-iteration cap without reaching the goal; returning a partial path (likely an unreachable target or disconnected island). Start=%s End=%s (Distance: %f)" ), *GetNameSafe( params.Owner ), max_iterations, *params.StartLocation.ToString(), *params.EndLocation.ToString(), FVector::Dist( params.StartLocation, params.EndLocation ) );
+            stepper.ForceEnd();
         }
     }
 

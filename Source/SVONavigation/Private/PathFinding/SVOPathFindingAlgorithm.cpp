@@ -62,6 +62,11 @@ void FSVOPathFindingAlgorithmStepper::SetState( const ESVOPathFindingAlgorithmSt
     State = new_state;
 }
 
+void FSVOPathFindingAlgorithmStepper::ForceEnd()
+{
+    SetState( ESVOPathFindingAlgorithmState::Ended );
+}
+
 float FSVOPathFindingAlgorithmStepper::GetHeuristicCost( const FSVONodeAddress & from, const FSVONodeAddress & to ) const
 {
     return Parameters.HeuristicCalculator->GetHeuristicCost( Parameters.VolumeNavigationData, from, to ) * Parameters.NavigationQueryFilter.GetHeuristicScale();

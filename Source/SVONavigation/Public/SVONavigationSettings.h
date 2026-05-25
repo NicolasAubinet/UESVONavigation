@@ -26,6 +26,8 @@ public:
     UPROPERTY( config, EditAnywhere, Category = "PathFinding" )
     TSubclassOf< USVORayCaster > DefaultRaycasterClass;
 
+    // Solver iteration cap: a query that reaches it logs a warning and returns the best partial path
+    // instead of exhausting the whole octree. Keep it above the cost of legitimate reachable searches.
     UPROPERTY( config, EditAnywhere, Category = "PathFinding", meta = ( ClampMin = "0" ) )
-    int32 PathFindingIterationsWarningThreshold;
+    int32 PathFindingMaxIterations;
 };
