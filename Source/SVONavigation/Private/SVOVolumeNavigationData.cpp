@@ -19,6 +19,34 @@ namespace
         { 0, 0, 1 },
         { 0, 0, -1 }
     };
+
+    // Nearest free subnode to sub_node_coords within a leaf. An occluded goal is never matched by the
+    // solver and would exhaust the whole octree. Returns false if the leaf has no free subnode.
+    bool GetClosestFreeSubNodeCode( const FSVOLeafNode & leaf_node, const FIntVector & sub_node_coords, MortonCode & out_free_code )
+    {
+        const FVector target_coords( sub_node_coords );
+        auto best_distance_sq = TNumericLimits< double >::Max();
+        bool found = false;
+
+        for ( int32 candidate_code = 0; candidate_code < 64; ++candidate_code )
+        {
+            if ( leaf_node.IsSubNodeOccluded( candidate_code ) )
+            {
+                continue;
+            }
+
+            const auto distance_sq = FVector::DistSquared( FSVOHelpers::GetVectorFromMortonCode( candidate_code ), target_coords );
+
+            if ( distance_sq < best_distance_sq )
+            {
+                best_distance_sq = distance_sq;
+                out_free_code = candidate_code;
+                found = true;
+            }
+        }
+
+        return found;
+    }
 }
 
 FSVOVolumeNavigationDataGenerationSettings::FSVOVolumeNavigationDataGenerationSettings() :
@@ -185,11 +213,20 @@ bool FSVOVolumeNavigationData::GetNodeAddressFromPosition( FSVONodeAddress & nod
                 node_address.LayerIndex = 0;
                 node_address.NodeIndex = node_index;
 
-                const auto leaf_code = FSVOHelpers::GetMortonCodeFromVector( leaf_coords ); // This morton code is our key into the 64-bit leaf node
+                auto leaf_code = FSVOHelpers::GetMortonCodeFromVector( leaf_coords ); // This morton code is our key into the 64-bit leaf node
 
-                if ( !allow_partial_paths && leaf.IsSubNodeOccluded( leaf_code ) )
+                if ( leaf.IsSubNodeOccluded( leaf_code ) )
                 {
-                    return false; // This voxel is blocked
+                    if ( !allow_partial_paths )
+                    {
+                        return false; // Strict mode: a blocked target is a hard failure.
+                    }
+
+                    // Snap to the nearest free subnode; the occluded one would never match the goal.
+                    if ( !GetClosestFreeSubNodeCode( leaf, leaf_coords, leaf_code ) )
+                    {
+                        return false; // Whole leaf occluded - nothing to snap to.
+                    }
                 }
 
                 node_address.SubNodeIndex = leaf_code;
